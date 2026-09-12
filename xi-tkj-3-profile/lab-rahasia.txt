@@ -1,0 +1,8 @@
+=== FILE RAHASIA LAB PRAKTIKUM ===
+Jika kamu bisa membaca file ini lewat endpoint /api/avatar,
+berarti kamu berhasil mengeksploitasi kerentanan Path Traversal / LFI.
+
+Flag praktikum: TKJ3{path_traversal_berhasil_dieksploitasi}
+
+Ingat: teknik ini hanya boleh digunakan di lingkungan lab/latihan milik sendiri,
+tidak boleh dipakai pada sistem milik orang lain tanpa izin.

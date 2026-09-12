@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background-color: #faf8f5;
+  color: #2f2b3a;
+}
+
+body {
+  font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: #ffd6e8;
+  color: #2f2b3a;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #faf8f5;
+}
+::-webkit-scrollbar-thumb {
+  background: #e6ddff;
+  border-radius: 8px;
+  border: 2px solid #faf8f5;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b8a4ff;
+}
+
+.bg-dot-pastel {
+  background-image: radial-gradient(rgba(184, 164, 255, 0.25) 1.5px, transparent 1.5px);
+  background-size: 28px 28px;
+}
