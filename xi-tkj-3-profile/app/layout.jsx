@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "XI TKJ 3 :: Class Portfolio",
+  title: "XI TKJ 3 | Morpheus - Gen 34",
   description:
     "Student Profile & Class Portfolio — XI TKJ 3. Light pastel edition.",
 };
