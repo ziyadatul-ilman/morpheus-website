@@ -1,55 +1,52 @@
 import Link from 'next/link';
+import HeroImage from './HeroImage';
 
-export default function Hero({ maleCount = 0, femaleCount = 0, totalBoard = 6 }) {
+export default function Hero({ totalStudents = 32, totalBoard = 6 }) {
   return (
-    <section className="py-12 md:py-20 px-6 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10">
-      {/* Teks Kiri */}
-      <div className="flex-1 space-y-6">
-        <span className="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
-          SMK Telkom Malang
-        </span>
-        
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">
-          XI TKJ <span className="bg-purple-100 text-purple-600 px-3 py-1 rounded-2xl">3 - Morpheus</span>
-        </h1>
-        
-        <h2 className="text-xl font-semibold text-sky-400">
-          Class Portfolio & Student Profile
-        </h2>
+    <section className="relative overflow-hidden bg-cream px-6 py-12 md:py-20">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-10 md:flex-row md:justify-between">
+        {/* Konten Kiri */}
+        <div className="flex-1 space-y-6 text-left">
+          <span className="inline-block rounded-full bg-pastel-yellow/80 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-ink shadow-pill">
+            SMK TELKOM MALANG
+          </span>
 
-        <p className="text-gray-500 text-sm md:text-base leading-relaxed max-w-xl">
-          Selamat datang di portofolio digital kelas XI TKJ 3! Kami adalah kumpulan siswa yang bersemangat belajar jaringan komputer dan keamanan siber. Yuk kenalan lebih dekat dengan teman-teman satu kelas. 🌸
-        </p>
+          <h1 className="font-display text-4xl font-extrabold text-ink md:text-5xl">
+            XI TKJ <span className="rounded-2xl bg-pastel-lavender/60 px-3 py-1 text-pastel-lavender-deep">3 - Morpheus</span>
+          </h1>
 
-        {/* Badge Hitung Otomatis Laki-laki & Perempuan */}
-        <div className="flex flex-wrap gap-3 pt-2">
-          <div className="bg-blue-50 text-blue-600 border border-blue-100 px-4 py-2 rounded-2xl text-xs md:text-sm font-semibold flex items-center gap-2">
-            👨‍💻 <span>{maleCount} Siswa Laki-laki</span>
+          <h2 className="font-display text-lg font-semibold text-pastel-blue-deep md:text-xl">
+            Class Portfolio & Student Profile
+          </h2>
+
+          <p className="max-w-xl text-sm leading-relaxed text-ink-soft md:text-base">
+            Selamat datang di portofolio digital kelas XI TKJ 3! Ini adalah kelas expertise Cyber Security. Kami kumpulan siswa yang bersemangat belajar jaringan komputer dan keamanan siber. Yuk kenalan lebih dekat dengan teman-teman satu kelas!
+          </p>
+
+          {/* Badge Statistik (32 Siswa & 6 Pengurus Kelas) */}
+          <div className="flex flex-wrap gap-3 pt-2">
+            <div className="flex items-center gap-2 rounded-2xl bg-pastel-pink/60 px-4 py-2 text-xs font-semibold text-ink shadow-pill md:text-sm">
+              👥 <span>{totalStudents} Siswa</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-2xl bg-pastel-mint/60 px-4 py-2 text-xs font-semibold text-ink shadow-pill md:text-sm">
+              🛠️ <span>{totalBoard} Pengurus Kelas</span>
+            </div>
           </div>
-          <div className="bg-pink-50 text-pink-600 border border-pink-100 px-4 py-2 rounded-2xl text-xs md:text-sm font-semibold flex items-center gap-2">
-            👩‍💻 <span>{femaleCount} Siswi Perempuan</span>
-          </div>
-          <div className="bg-emerald-50 text-emerald-600 border border-emerald-100 px-4 py-2 rounded-2xl text-xs md:text-sm font-semibold flex items-center gap-2">
-            🛠️ <span>{totalBoard} Pengurus Kelas</span>
+
+          {/* Tombol CTA */}
+          <div className="pt-4">
+            <Link
+              href="#siswa"
+              className="inline-block rounded-full bg-pastel-pink px-6 py-3 font-medium text-ink shadow-pill transition hover:opacity-90"
+            >
+              Lihat Daftar Siswa →
+            </Link>
           </div>
         </div>
 
-        {/* Tombol CTA */}
-        <div className="pt-4">
-          <Link href="#siswa" className="inline-block bg-pink-400 hover:bg-pink-500 text-white font-semibold px-6 py-3 rounded-full shadow-md hover:shadow-lg transition">
-            Lihat Daftar Siswa →
-          </Link>
-        </div>
-      </div>
-
-      {/* Foto Kanan */}
-      <div className="flex-1 w-full max-w-md md:max-w-none relative">
-        <div className="bg-white p-3 rounded-3xl shadow-xl border border-pink-50 overflow-hidden">
-          <img 
-            src="/images/class-photo.jpg" 
-            alt="XI TKJ 3 Class Photo" 
-            className="w-full h-auto rounded-2xl object-cover"
-          />
+        {/* Komponen Foto Asli */}
+        <div className="w-full max-w-md md:w-1/2">
+          <HeroImage />
         </div>
       </div>
     </section>
