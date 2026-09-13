@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import HeroImage from './HeroImage';
 
 export default function Hero() {
   return (
@@ -32,7 +31,7 @@ export default function Hero() {
             Selamat datang di portofolio digital kelas XI TKJ 3! Ini adalah kelas expertise Cyber Security. Kami kumpulan siswa yang bersemangat belajar jaringan komputer dan keamanan siber. Yuk kenalan lebih dekat dengan teman-teman satu kelas!
           </p>
 
-          {/* Badge Statistik */}
+          {/* Badge Statistik Pastel */}
           <div className="flex flex-wrap gap-3 pt-2">
             <div className="flex items-center gap-2 rounded-2xl bg-pastel-pink/60 px-4 py-2 text-xs font-semibold text-ink shadow-pill md:text-sm">
               👥 <span>32 Siswa</span>
@@ -53,9 +52,15 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Komponen Foto Asli */}
+        {/* Foto Kelas Langsung */}
         <div className="w-full max-w-md md:w-1/2">
-          <HeroImage />
+          <div className="overflow-hidden rounded-3xl border border-pastel-lavender/50 bg-white p-3 shadow-xl">
+            <img 
+              src="/images/class-photo.jpg" 
+              alt="XI TKJ 3 Class Photo" 
+              className="h-auto w-full rounded-2xl object-cover"
+            />
+          </div>
         </div>
       </div>
     </section>
