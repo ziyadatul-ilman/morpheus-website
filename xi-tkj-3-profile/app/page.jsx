@@ -7,15 +7,25 @@ import { MOCK_STUDENTS } from "@/lib/mockStudents";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  // PAKSA LANGSUNG PAKAI MOCK_STUDENTS
-  // Agar web 100% membaca data & foto dari lib/mockStudents.js
   const finalStudents = MOCK_STUDENTS;
-  const totalStudents = finalStudents.length;
+  
+  // Hitung otomatis jumlah laki-laki dan perempuan dari data mock
+  const maleCount = finalStudents.filter(
+    (s) => s.gender === 'L' || s.gender === 'male' || s.gender === 'Laki-laki'
+  ).length;
+  
+  const femaleCount = finalStudents.filter(
+    (s) => s.gender === 'P' || s.gender === 'female' || s.gender === 'Perempuan'
+  ).length;
 
   return (
     <main>
       <Navbar />
-      <Hero totalStudents={totalStudents} />
+      <Hero 
+        maleCount={maleCount || 20} 
+        femaleCount={femaleCount || 12} 
+        totalBoard={6} 
+      />
 
       <section id="struktur" className="bg-white px-6 py-20">
         <div className="mx-auto max-w-5xl">

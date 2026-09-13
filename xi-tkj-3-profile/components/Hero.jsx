@@ -1,95 +1,55 @@
-"use client";
+import Link from 'next/link';
 
-const SCHOOL_NAME = process.env.NEXT_PUBLIC_SCHOOL_NAME || "SMK Telkom Malang";
-
-function StatPill({ emoji, label, value, color }) {
-  const colorMap = {
-    pink: "bg-pastel-pink/70 text-ink",
-    blue: "bg-pastel-blue/70 text-ink",
-    mint: "bg-pastel-mint/70 text-ink",
-    lavender: "bg-pastel-lavender/70 text-ink",
-    yellow: "bg-pastel-yellow/70 text-ink",
-  };
+export default function Hero({ maleCount = 0, femaleCount = 0, totalBoard = 6 }) {
   return (
-    <div
-      className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-pill ${colorMap[color]}`}
-    >
-      <span>{emoji}</span>
-      <span>{value}</span>
-      <span className="font-normal text-ink-soft">{label}</span>
-    </div>
-  );
-}
+    <section className="py-12 md:py-20 px-6 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10">
+      {/* Teks Kiri */}
+      <div className="flex-1 space-y-6">
+        <span className="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+          SMK Telkom Malang
+        </span>
+        
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">
+          XI TKJ <span className="bg-purple-100 text-purple-600 px-3 py-1 rounded-2xl">3 - Morpheus</span>
+        </h1>
+        
+        <h2 className="text-xl font-semibold text-sky-400">
+          Class Portfolio & Student Profile
+        </h2>
 
-export default function Hero({ totalStudents }) {
-  return (
-    <section className="relative overflow-hidden bg-dot-pastel">
-      <div className="pointer-events-none absolute -left-16 -top-16 h-64 w-64 rounded-full bg-pastel-pink/40 blur-3xl" />
-      <div className="pointer-events-none absolute -right-10 top-24 h-56 w-56 rounded-full bg-pastel-blue/40 blur-3xl" />
-      <div className="pointer-events-none absolute bottom-0 left-1/3 h-48 w-48 rounded-full bg-pastel-mint/40 blur-3xl" />
+        <p className="text-gray-500 text-sm md:text-base leading-relaxed max-w-xl">
+          Selamat datang di portofolio digital kelas XI TKJ 3! Kami adalah kumpulan siswa yang bersemangat belajar jaringan komputer dan keamanan siber. Yuk kenalan lebih dekat dengan teman-teman satu kelas. 🌸
+        </p>
 
-      <div className="relative mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-[1fr_1fr] md:items-center md:py-24">
-        <div className="flex flex-col">
-          <span className="mb-4 w-fit rounded-full bg-pastel-yellow/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-ink shadow-pill">
-            {SCHOOL_NAME}
-          </span>
-
-          <h1 className="font-display text-4xl font-extrabold text-ink sm:text-5xl">
-              XI TKJ <span className="rounded-2xl bg-pastel-lavender/60 px-3 py-1 text-pastel-lavender-deep">3 - Morpheus</span>
-          </h1>
-
-          <p className="mt-3 font-display text-xl font-semibold text-pastel-blue-deep">
-            Class Portfolio &amp; Student Profile
-          </p>
-
-          <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-soft">
-            Selamat datang di portofolio digital kelas XI TKJ 3! Kami adalah
-            kumpulan siswa yang bersemangat belajar jaringan komputer dan
-            keamanan siber. Yuk kenalan lebih dekat dengan teman-teman satu
-            kelas. 🌸
-          </p>
-
-          <div className="mt-6 flex flex-wrap gap-3">
-            <StatPill emoji="👥" value={totalStudents} label="Siswa" color="pink" />
-            <StatPill emoji="🌐" value="2" label="Bidang Keahlian" color="blue" />
-            <StatPill emoji="✨" value="6" label="Pengurus Kelas" color="mint" />
+        {/* Badge Hitung Otomatis Laki-laki & Perempuan */}
+        <div className="flex flex-wrap gap-3 pt-2">
+          <div className="bg-blue-50 text-blue-600 border border-blue-100 px-4 py-2 rounded-2xl text-xs md:text-sm font-semibold flex items-center gap-2">
+            👨‍💻 <span>{maleCount} Siswa Laki-laki</span>
           </div>
-
-          <a
-            href="#siswa"
-            className="mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-pastel-pink-deep px-6 py-3 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-card"
-          >
-            Lihat Daftar Siswa
-            <span aria-hidden>→</span>
-          </a>
+          <div className="bg-pink-50 text-pink-600 border border-pink-100 px-4 py-2 rounded-2xl text-xs md:text-sm font-semibold flex items-center gap-2">
+            👩‍💻 <span>{femaleCount} Siswi Perempuan</span>
+          </div>
+          <div className="bg-emerald-50 text-emerald-600 border border-emerald-100 px-4 py-2 rounded-2xl text-xs md:text-sm font-semibold flex items-center gap-2">
+            🛠️ <span>{totalBoard} Pengurus Kelas</span>
+          </div>
         </div>
 
-        <div className="flex justify-center">
-          <div className="relative w-full max-w-sm rotate-1 rounded-4xl border-4 border-white bg-white p-3 shadow-card">
-            <div className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br from-pastel-pink/50 via-pastel-lavender/40 to-pastel-blue/50">
-              <img
-                src="/img/class-photo.jpg"
-                alt="Foto Kelas XI TKJ 3"
-                className="h-full w-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                  e.currentTarget.nextSibling.style.display = "flex";
-                }}
-              />
-              <div className="hidden h-full w-full flex-col items-center justify-center gap-2 text-center text-ink-soft">
-                <span className="text-4xl">📸</span>
-                <p className="px-6 text-xs">
-                  Taruh foto kelas di <br />
-                  <code className="rounded bg-white/70 px-1.5 py-0.5 text-[10px]">
-                    /public/img/class-photo.jpg
-                  </code>
-                </p>
-              </div>
-            </div>
-            <div className="absolute -bottom-3 -right-3 flex h-14 w-14 -rotate-6 items-center justify-center rounded-2xl bg-pastel-yellow text-2xl shadow-pill">
-              🎓
-            </div>
-          </div>
+        {/* Tombol CTA */}
+        <div className="pt-4">
+          <Link href="#siswa" className="inline-block bg-pink-400 hover:bg-pink-500 text-white font-semibold px-6 py-3 rounded-full shadow-md hover:shadow-lg transition">
+            Lihat Daftar Siswa →
+          </Link>
+        </div>
+      </div>
+
+      {/* Foto Kanan */}
+      <div className="flex-1 w-full max-w-md md:max-w-none relative">
+        <div className="bg-white p-3 rounded-3xl shadow-xl border border-pink-50 overflow-hidden">
+          <img 
+            src="/images/class-photo.jpg" 
+            alt="XI TKJ 3 Class Photo" 
+            className="w-full h-auto rounded-2xl object-cover"
+          />
         </div>
       </div>
     </section>
