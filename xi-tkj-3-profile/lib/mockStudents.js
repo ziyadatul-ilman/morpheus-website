@@ -687,21 +687,21 @@ export const classNamePhotos = [
   },
   {
     id: 2,
-    title: "Praktikum Keamanan Jaringan",
-    caption: "Suasana serius tapi santai saat lab komputer.",
-    image: "/students/praktikum.jpg",
+    title: "Pilketos 2026",
+    caption: "Photobooth pilketos bersama teman satu kelas.",
+    image: "/img/pilketos.jpg",
   },
   {
     id: 3,
     title: "Pitulasan",
     caption: "Peserta Lomba Estafet Tepung.",
-    photo_file: "tepung.jpg",
+    photo_file: "/img/tepung.jpg",
   },
   {
     id: 4,
-    title: "Kebersamaan Kelas",
-    caption: "Foto bersama seluruh anggota Morpheus XI TKJ 3.",
-    image: "/students/bersama.jpg",
+    title: "Petugas Upacara",
+    caption: "XI TKJ 3 ketika menjadi petugas upacara hari senin.",
+    image: "/img/upacara.jpg",
   },
   {
     id: 5,
