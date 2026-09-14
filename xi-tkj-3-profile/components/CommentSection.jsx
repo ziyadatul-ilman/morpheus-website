@@ -1,114 +1,148 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 
-// =====================================================================================
-// KERENTANAN PRAKTIKUM: STORED CROSS-SITE SCRIPTING (XSS) — tetap dipertahankan
-// meski tampilan sudah diganti ke tema pastel. Komentar disimpan lewat /api/comments
-// (POST) lalu dirender kembali dengan `dangerouslySetInnerHTML` TANPA sanitasi, supaya
-// siswa tetap bisa mendemonstrasikan payload seperti <img onerror=...> pada komentar.
-// Lihat CHEATSHEET.md untuk panduan pengujian & cara memperbaikinya.
-// =====================================================================================
+export default function CommentSection({ studentId }) {
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
+  const [userCode, setUserCode] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
-export default function CommentSection({ studentId, initialComments }) {
-  const [comments, setComments] = useState(initialComments || []);
-  const [name, setName] = useState("");
-  const [content, setContent] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (!name.trim() || !content.trim()) return;
-    setSubmitting(true);
-    try {
-      const res = await fetch("/api/comments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId, authorName: name, content }),
-      });
-      const data = await res.json();
-      if (data.comment) {
-        setComments((prev) => [data.comment, ...prev]);
-      } else {
-        // Fallback lokal kalau DB belum siap, supaya UI tetap terasa hidup
-        setComments((prev) => [
-          {
-            id: `local-${Date.now()}`,
-            author_name: name,
-            content,
-            created_at: new Date().toISOString(),
-          },
-          ...prev,
-        ]);
-      }
-      setName("");
-      setContent("");
-    } catch (e) {
-      setComments((prev) => [
-        {
-          id: `local-${Date.now()}`,
-          author_name: name,
-          content,
-          created_at: new Date().toISOString(),
-        },
-        ...prev,
-      ]);
-      setName("");
-      setContent("");
-    } finally {
-      setSubmitting(false);
+  // 1. Inisialisasi USN 'User#123' per Pengunjung & Load Komentar
+  useEffect(() => {
+    let savedCode = localStorage.getItem('morpheus_user_code');
+    if (!savedCode) {
+      // Generate angka acak 3-4 digit (contoh: User#4829)
+      const randomNum = Math.floor(100 + Math.random() * 9000);
+      savedCode = `User#${randomNum}`;
+      localStorage.setItem('morpheus_user_code', savedCode);
     }
-  }
+    setUserCode(savedCode);
+
+    // Load komentar dari LocalStorage
+    const storageKey = `comments_student_${studentId}`;
+    const savedComments = localStorage.getItem(storageKey);
+    if (savedComments) {
+      setComments(JSON.parse(savedComments));
+    }
+  }, [studentId]);
+
+  // 2. Fungsi Kirim Komentar
+  const handleAddComment = (e) => {
+    e.preventDefault();
+    setErrorMsg('');
+
+    if (!newComment.trim()) return;
+
+    // Batas Maksimal 50 Komentar per Siswa
+    if (comments.length >= 50) {
+      setErrorMsg('Batas maksimal 50 komentar untuk siswa ini telah tercapai!');
+      return;
+    }
+
+    const commentObj = {
+      id: Date.now(),
+      author: userCode, // Menggunakan format User#123
+      text: newComment.trim(),
+      date: new Date().toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    };
+
+    const updatedComments = [commentObj, ...comments];
+    setComments(updatedComments);
+
+    // Simpan ke LocalStorage
+    const storageKey = `comments_student_${studentId}`;
+    localStorage.setItem(storageKey, JSON.stringify(updatedComments));
+
+    setNewComment('');
+  };
+
+  // 3. Fungsi Hapus Komentar
+  const handleDeleteComment = (commentId) => {
+    const updatedComments = comments.filter((c) => c.id !== commentId);
+    setComments(updatedComments);
+
+    const storageKey = `comments_student_${studentId}`;
+    localStorage.setItem(storageKey, JSON.stringify(updatedComments));
+  };
 
   return (
-    <div className="mt-10 rounded-3xl border border-pastel-lavender/40 bg-white p-6 shadow-card sm:p-8">
-      <h2 className="mb-5 font-display text-lg font-bold text-ink">
-        💬 Komentar &amp; Ucapan
-      </h2>
+    <div className="mt-8 rounded-3xl border border-pastel-lavender/50 bg-white/80 p-6 shadow-sm backdrop-blur-sm">
+      <div className="flex items-center justify-between pb-4">
+        <h3 className="font-display text-lg font-bold text-ink">
+          💬 Pesan & Impression ({comments.length}/50)
+        </h3>
+        <span className="rounded-full bg-pastel-yellow/60 px-3 py-1 text-xs font-semibold text-ink">
+          Kamu: <strong className="text-pastel-blue-deep">{userCode}</strong>
+        </span>
+      </div>
 
-      <form onSubmit={handleSubmit} className="mb-6 space-y-3">
-        <input
-          type="text"
-          placeholder="Nama kamu"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-2xl border-2 border-pastel-lavender/40 bg-cream/60 px-4 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-pastel-pink-deep focus:outline-none"
-        />
+      {/* Form Input Komentar */}
+      <form onSubmit={handleAddComment} className="mb-6 space-y-3">
         <textarea
-          placeholder="Tulis komentar..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          placeholder="Tulis pesan untuk siswa ini..."
+          disabled={comments.length >= 50}
           rows={3}
-          className="w-full rounded-2xl border-2 border-pastel-lavender/40 bg-cream/60 px-4 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-pastel-pink-deep focus:outline-none"
+          className="w-full rounded-2xl border border-pastel-lavender/60 p-3 text-sm text-ink focus:border-pastel-lavender focus:outline-none focus:ring-2 focus:ring-pastel-pink/40 disabled:bg-gray-100"
         />
-        <button
-          type="submit"
-          disabled={submitting}
-          className="rounded-full bg-pastel-pink-deep px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-card disabled:opacity-50"
-        >
-          {submitting ? "Mengirim..." : "Kirim Komentar"}
-        </button>
+
+        {errorMsg && (
+          <p className="text-xs font-semibold text-red-500">{errorMsg}</p>
+        )}
+
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={comments.length >= 50 || !newComment.trim()}
+            className="rounded-full bg-pastel-pink px-5 py-2 text-xs font-bold text-ink shadow-pill transition hover:opacity-90 disabled:opacity-50"
+          >
+            Kirim Komentar 🚀
+          </button>
+        </div>
       </form>
 
-      <div className="space-y-3">
-        {comments.length === 0 && (
-          <p className="text-sm text-ink-faint">Belum ada komentar. Jadilah yang pertama! 🎀</p>
-        )}
-        {comments.map((c) => (
-          <div
-            key={c.id}
-            className="rounded-2xl border border-pastel-blue/40 bg-pastel-blue/10 p-4"
-          >
-            <p className="mb-1 text-xs font-semibold text-pastel-blue-deep">
-              {c.author_name}
-            </p>
-            {/* VULNERABLE (sengaja): rendering raw HTML dari input pengguna tanpa sanitasi */}
+      {/* Daftar Komentar */}
+      <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
+        {comments.length === 0 ? (
+          <p className="text-center text-xs text-ink-soft italic py-4">
+            Belum ada komentar. Jadilah yang pertama memberikan pesan!
+          </p>
+        ) : (
+          comments.map((item) => (
             <div
-              className="text-sm text-ink-soft"
-              dangerouslySetInnerHTML={{ __html: c.content }}
-            />
-          </div>
-        ))}
+              key={item.id}
+              className="rounded-2xl bg-cream/60 p-3.5 text-xs border border-pastel-pink/20 flex flex-col justify-between gap-2"
+            >
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-pastel-lavender-deep">
+                  👤 {item.author}
+                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-ink-soft">{item.date}</span>
+                  
+                  {/* Tombol Hapus (Hanya muncul jika komentar dibuat oleh user tersebut) */}
+                  {item.author === userCode && (
+                    <button
+                      onClick={() => handleDeleteComment(item.id)}
+                      title="Hapus komentar ini"
+                      className="text-red-400 hover:text-red-600 transition text-xs pl-1"
+                    >
+                      🗑️
+                    </button>
+                  )}
+                </div>
+              </div>
+              <p className="text-ink leading-relaxed whitespace-pre-line">{item.text}</p>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
