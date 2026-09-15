@@ -1,3 +1,4 @@
+import CommentSection from "@/components/CommentSection";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ClassTree from "@/components/ClassTree";
@@ -12,7 +13,7 @@ export default async function HomePage() {
   return (
     <main className="bg-cream min-h-screen">
       <Navbar />
-      
+
       {/* 1. Hero / Beranda (Background Pastel Pink) */}
       <Hero />
 
@@ -60,7 +61,14 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4. Footer (Background Warm Pastel Yellow) */}
+      {/* 4. Bagian Kolom Komentar (Tes XSS) */}
+      <section id="komentar" className="relative overflow-hidden px-6 py-12">
+        <div className="relative z-10 mx-auto max-w-4xl">
+          <CommentSection />
+        </div>
+      </section>
+
+      {/* 5. Footer (Background Warm Pastel Yellow) */}
       <footer className="relative border-t border-pastel-lavender/40 bg-pastel-yellow/20 px-6 py-8 text-center text-sm font-medium text-ink-soft">
         Dibuat dengan 💛 oleh XI TKJ 3 — Class Portfolio &amp; media praktikum keamanan aplikasi web
       </footer>

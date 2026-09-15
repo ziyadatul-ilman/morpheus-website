@@ -8,67 +8,67 @@ export default function CommentSection({ studentId }) {
   const [userCode, setUserCode] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  // 1. Inisialisasi USN 'User#123' per Pengunjung & Load Komentar
+  // 1. Inisialisasi USN 'User#123' & Fetch Komentar dari MariaDB
   useEffect(() => {
     let savedCode = localStorage.getItem('morpheus_user_code');
     if (!savedCode) {
-      // Generate angka acak 3-4 digit (contoh: User#4829)
       const randomNum = Math.floor(100 + Math.random() * 9000);
       savedCode = `User#${randomNum}`;
       localStorage.setItem('morpheus_user_code', savedCode);
     }
     setUserCode(savedCode);
 
-    // Load komentar dari LocalStorage
-    const storageKey = `comments_student_${studentId}`;
-    const savedComments = localStorage.getItem(storageKey);
-    if (savedComments) {
-      setComments(JSON.parse(savedComments));
-    }
+    fetchComments();
   }, [studentId]);
 
-  // 2. Fungsi Kirim Komentar
-  const handleAddComment = (e) => {
+  // Fungsi untuk mengambil data dari MariaDB
+  const fetchComments = async () => {
+    try {
+      const res = await fetch(`/api/comments?studentId=${studentId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setComments(data);
+      }
+    } catch (err) {
+      console.error("Gagal mengambil komentar dari MariaDB:", err);
+    }
+  };
+
+  // 2. Fungsi Kirim Komentar ke MariaDB
+  const handleAddComment = async (e) => {
     e.preventDefault();
     setErrorMsg('');
 
     if (!newComment.trim()) return;
 
-    // Batas Maksimal 50 Komentar per Siswa
     if (comments.length >= 50) {
       setErrorMsg('Batas maksimal 50 komentar untuk siswa ini telah tercapai!');
       return;
     }
 
-    const commentObj = {
-      id: Date.now(),
-      author: userCode, // Menggunakan format User#123
-      text: newComment.trim(),
-      date: new Date().toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit'
-      })
-    };
+    try {
+      const res = await fetch('/api/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentId: studentId,
+          authorName: userCode,
+          content: newComment.trim()
+        })
+      });
 
-    const updatedComments = [commentObj, ...comments];
-    setComments(updatedComments);
+      const data = await res.json();
 
-    // Simpan ke LocalStorage
-    const storageKey = `comments_student_${studentId}`;
-    localStorage.setItem(storageKey, JSON.stringify(updatedComments));
-
-    setNewComment('');
-  };
-
-  // 3. Fungsi Hapus Komentar
-  const handleDeleteComment = (commentId) => {
-    const updatedComments = comments.filter((c) => c.id !== commentId);
-    setComments(updatedComments);
-
-    const storageKey = `comments_student_${studentId}`;
-    localStorage.setItem(storageKey, JSON.stringify(updatedComments));
+      if (res.ok) {
+        // Ambil data terbaru dari database
+        fetchComments();
+        setNewComment('');
+      } else {
+        setErrorMsg(data.error || 'Gagal mengirim komentar');
+      }
+    } catch (err) {
+      setErrorMsg('Gagal terhubung ke database MariaDB');
+    }
   };
 
   return (
@@ -122,24 +122,21 @@ export default function CommentSection({ studentId }) {
             >
               <div className="flex justify-between items-center">
                 <span className="font-bold text-pastel-lavender-deep">
-                  👤 {item.author}
+                  👤 {item.author_name}
                 </span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-ink-soft">{item.date}</span>
-                  
-                  {/* Tombol Hapus (Hanya muncul jika komentar dibuat oleh user tersebut) */}
-                  {item.author === userCode && (
-                    <button
-                      onClick={() => handleDeleteComment(item.id)}
-                      title="Hapus komentar ini"
-                      className="text-red-400 hover:text-red-600 transition text-xs pl-1"
-                    >
-                      🗑️
-                    </button>
-                  )}
-                </div>
+                <span className="text-[10px] text-ink-soft">
+                  {new Date(item.created_at).toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </span>
               </div>
-              <p className="text-ink leading-relaxed whitespace-pre-line">{item.text}</p>
+              <p 
+                className="text-ink leading-relaxed whitespace-pre-line"
+                dangerouslySetInnerHTML={{ __html: item.content }}
+              />
             </div>
           ))
         )}
